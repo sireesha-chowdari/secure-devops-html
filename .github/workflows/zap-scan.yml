@@ -2,8 +2,8 @@ name: OWASP ZAP Scan
 
 on:
   push:
-    paths:
-      - 'index.html'
+    branches:
+      - main
 
 jobs:
   zap_scan:
@@ -11,23 +11,9 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Setup Java
-        uses: actions/setup-java@v3
+      - name: Run OWASP ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.7.0
         with:
-          distribution: 'temurin'
-          java-version: '11'
-
-      - name: Download and run ZAP Baseline Scan
-        run: |
-          mkdir zap
-          curl -L https://github.com/zaproxy/zaproxy/releases/download/v2.13.0/ZAP_2_13_0_unix.sh -o zap/zap.sh
-          chmod +x zap/zap.sh
-          zap/zap.sh -cmd -quickurl https://sireesha-chowdari.github.io/secure-devops-html/ -quickout zap/report.html
-
-      - name: Upload ZAP report
-        uses: actions/upload-artifact@v3
-        with:
-          name: zap-report
-          path: zap/report.html
+          target: 'https://sireesha-chowdari.github.io/secure-devops-html/'
