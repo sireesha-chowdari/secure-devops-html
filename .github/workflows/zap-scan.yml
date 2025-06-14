@@ -19,12 +19,12 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - name: Download ZAP
+      - name: Download and run ZAP Baseline Scan
         run: |
           mkdir zap
           curl -L https://github.com/zaproxy/zaproxy/releases/download/v2.13.0/ZAP_2_13_0_unix.sh -o zap/zap.sh
           chmod +x zap/zap.sh
-          ./zap/zap.sh -dir zap -quickurl https://sireesha-chowdari.github.io/secure-devops-html/ -quickout zap/report.html
+          zap/zap.sh -cmd -quickurl https://sireesha-chowdari.github.io/secure-devops-html/ -quickout zap/report.html
 
       - name: Upload ZAP report
         uses: actions/upload-artifact@v3
