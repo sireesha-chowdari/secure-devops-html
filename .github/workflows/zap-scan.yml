@@ -11,18 +11,24 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Run ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.7.0
+      - name: Setup Java
+        uses: actions/setup-java@v3
         with:
-          target: 'https://sireesha-chowdari.github.io/secure-devops-html/'
-      
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Pull and run ZAP Docker
+        run: |
+          docker run --user root --rm \
+            -v $(pwd):/zap/wrk:rw \
+            ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
+            -t https://sireesha-chowdari.github.io/secure-devops-html/ \
+            -r zap_report.html
+
       - name: Upload ZAP report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: zap-report
-          path: |
-            report_html.html
-            report_md.md
-            report_json.json
+          path: zap_report.html
